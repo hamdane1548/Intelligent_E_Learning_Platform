@@ -28,7 +28,7 @@ Intelligent_E_Learning_Platform/
 │   ├── package.json
 │   └── ...
 │
-├── backend/                   
+├── backend/
 │   ├── src/
 │   ├── pom.xml
 │   └── ...
