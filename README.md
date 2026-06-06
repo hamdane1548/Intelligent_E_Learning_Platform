@@ -50,8 +50,7 @@ Intelligent_E_Learning_Platform/
 ├── docs/                      
 │
 ├── .github/
-│   └── workflows/             # CI/CD pipelines
-│
+│   └── workflows/             # (planned) CI/CD pipelines
 ├── docker-compose.yml        
 ├── README.md
 └── LICENSE
