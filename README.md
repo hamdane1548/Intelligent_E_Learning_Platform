@@ -33,7 +33,7 @@ Intelligent_E_Learning_Platform/
 │   ├── pom.xml
 │   └── ...
 │
-├── ai-services/              
+├── ai-services/
 │   │
 │   ├── rag-system/            
 │   │   ├── embeddings/
