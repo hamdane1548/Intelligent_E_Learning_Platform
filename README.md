@@ -19,6 +19,7 @@ This project aims to build a modern educational platform that combines tradition
 The project is planned to follow a monorepo architecture where all components are maintained within a single repository.
 
 (Entries shown below represent the intended target structure and may not exist yet in this repository.)
+```text
 Intelligent_E_Learning_Platform/
 │
 ├── frontend/                 
@@ -176,7 +177,6 @@ develop        → Integration branch
 main           → Production-ready code
 ```
 
-Pull requests to `main` must pass all CI checks before being merged.
+Once CI is configured, pull requests to `main` must pass all CI checks before being merged.
 
 ---
-
