@@ -1,7 +1,7 @@
 import { useState } from "react";
 import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
-import { UserPlus, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 function Signup() {
   const navigate = useNavigate();
@@ -69,9 +69,11 @@ function Signup() {
             </Link>
 
             <div className="mb-8">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-lg shadow-violet-200">
-                <UserPlus size={32} className="text-white" strokeWidth={2.4} />
-              </div>
+              <img
+                src="/images/logo.png"
+                alt="SmartLearn AI Logo"
+                className="mb-6 h-20 w-20 object-contain"
+              />
 
               <h2 className="text-4xl font-extrabold text-slate-900">
                 Inscription

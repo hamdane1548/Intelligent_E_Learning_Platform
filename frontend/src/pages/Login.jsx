@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
-import { GraduationCap, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 function Login() {
   const navigate = useNavigate();
@@ -9,6 +9,15 @@ function Login() {
   const [email, setEmail] = useState("admin@gmail.com");
   const [password, setPassword] = useState("123456");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    if (token && user) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -57,13 +66,11 @@ function Login() {
             </Link>
 
             <div className="mb-9">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-lg shadow-violet-200">
-                <GraduationCap
-                  size={34}
-                  className="text-white"
-                  strokeWidth={2.4}
-                />
-              </div>
+              <img
+                src="/images/logo.png"
+                alt="SmartLearn AI Logo"
+                className="mb-6 h-20 w-20 object-contain"
+              />
 
               <h2 className="text-4xl font-extrabold text-slate-900">
                 Connexion

@@ -3,336 +3,275 @@ import {
   ArrowRight,
   Brain,
   BookOpen,
-  FileText,
+  ClipboardList,
   BarChart3,
   ShieldCheck,
   Sparkles,
-  UploadCloud,
   CheckCircle2,
-  PlayCircle,
 } from "lucide-react";
+import Footer from "../components/Footer";
 
 function Home() {
   return (
-    <div className="min-h-screen bg-[#080A18] text-white overflow-hidden">
-      {/* BACKGROUND DECOR */}
+    <div className="min-h-screen bg-[#070B17] text-white overflow-hidden">
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-120px] left-[-120px] h-[420px] w-[420px] rounded-full bg-violet-600/30 blur-[120px]"></div>
-        <div className="absolute top-[160px] right-[-140px] h-[460px] w-[460px] rounded-full bg-fuchsia-500/20 blur-[130px]"></div>
-        <div className="absolute bottom-[-180px] left-[35%] h-[420px] w-[420px] rounded-full bg-indigo-500/20 blur-[130px]"></div>
+        <div className="absolute left-[-100px] top-[-100px] h-[320px] w-[320px] rounded-full bg-violet-600/20 blur-[120px]"></div>
+        <div className="absolute right-[-100px] top-[80px] h-[320px] w-[320px] rounded-full bg-fuchsia-500/20 blur-[120px]"></div>
+        <div className="absolute bottom-[-120px] left-[20%] h-[320px] w-[320px] rounded-full bg-cyan-500/10 blur-[120px]"></div>
       </div>
 
-      {/* NAVBAR */}
-      <nav className="relative z-10 px-6 py-6">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-900/40">
-              <Brain size={25} className="text-white" />
-            </div>
-
+      <header className="relative z-20 border-b border-white/10 bg-[#070B17]/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <img
+              src="/images/logo.png"
+              alt="SmartLearn AI"
+              className="h-12 w-12 rounded-2xl bg-white p-1 object-contain"
+            />
             <div>
-              <h1 className="text-xl font-black tracking-tight">
-                SmartLearn AI
-              </h1>
+              <h1 className="text-xl font-extrabold">SmartLearn AI</h1>
               <p className="text-xs text-white/45">
-                Intelligent E-Learning Platform
+                Plateforme e-learning intelligente
               </p>
             </div>
-          </Link>
+          </div>
 
-          <div className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm text-white/65 hover:text-white">
+          <nav className="hidden items-center gap-8 md:flex">
+            <a href="#features" className="text-sm text-white/65 hover:text-white transition">
               Fonctionnalités
             </a>
-            <a href="#how" className="text-sm text-white/65 hover:text-white">
-              Comment ça marche
+            <a href="#about" className="text-sm text-white/65 hover:text-white transition">
+              À propos
             </a>
-            <a href="#roles" className="text-sm text-white/65 hover:text-white">
-              Rôles
+            <a href="#contact" className="text-sm text-white/65 hover:text-white transition">
+              Contact
             </a>
-          </div>
+          </nav>
 
           <div className="flex items-center gap-3">
             <Link
               to="/login"
-              className="rounded-2xl px-5 py-3 text-sm font-bold text-white/75 transition hover:bg-white/10 hover:text-white"
+              className="rounded-2xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Connexion
             </Link>
-
             <Link
               to="/signup"
-              className="rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#080A18] shadow-xl shadow-violet-950/30 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-fuchsia-900/30 transition hover:scale-[1.02]"
             >
               Commencer
             </Link>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* HERO */}
-      <section className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-20 pt-10 lg:grid-cols-2 lg:pt-20">
-        <div>
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-xl">
-            <Sparkles size={16} className="text-fuchsia-300" />
-            <span className="text-sm font-semibold text-white/80">
+      <main className="relative z-10">
+        <section className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 py-20 lg:grid-cols-2 lg:py-28">
+          <div>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-fuchsia-500/20 bg-fuchsia-500/10 px-4 py-2 text-sm text-fuchsia-200">
+              <Sparkles size={16} />
               Nouvelle génération d’apprentissage intelligent
-            </span>
-          </div>
-
-          <h2 className="max-w-3xl text-5xl font-black leading-[1.05] tracking-tight md:text-7xl">
-            Apprendre plus vite avec une plateforme{" "}
-            <span className="bg-gradient-to-r from-violet-300 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
-              boostée par l’IA
-            </span>
-          </h2>
-
-          <p className="mt-7 max-w-2xl text-lg leading-relaxed text-white/60">
-            SmartLearn AI transforme les cours PDF en résumés clairs, génère
-            automatiquement des quiz, suit les résultats des étudiants et aide
-            les enseignants à créer une expérience e-learning moderne.
-          </p>
-
-          <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-            <Link
-              to="/signup"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500 to-fuchsia-600 px-7 py-4 font-black text-white shadow-2xl shadow-fuchsia-950/40 transition hover:scale-[1.02]"
-            >
-              Créer un compte
-              <ArrowRight size={20} />
-            </Link>
-
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-7 py-4 font-bold text-white backdrop-blur-xl transition hover:bg-white/10"
-            >
-              <PlayCircle size={20} />
-              Se connecter
-            </Link>
-          </div>
-
-          <div className="mt-10 grid max-w-xl grid-cols-3 gap-4">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-              <p className="text-3xl font-black">AI</p>
-              <p className="mt-1 text-sm text-white/50">Résumé PDF</p>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-              <p className="text-3xl font-black">Quiz</p>
-              <p className="mt-1 text-sm text-white/50">Auto-généré</p>
+            <h1 className="text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+              Apprendre plus vite avec{" "}
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                SmartLearn AI
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/60">
+              Une plateforme moderne pour gérer les cours, générer des quiz,
+              résumer les contenus avec l’intelligence artificielle et suivre la
+              progression des étudiants en temps réel.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                to="/signup"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-4 font-semibold text-white shadow-xl shadow-fuchsia-950/30 transition hover:scale-[1.02]"
+              >
+                Créer un compte
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                to="/login"
+                className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
+              >
+                Se connecter
+              </Link>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-              <p className="text-3xl font-black">JWT</p>
-              <p className="mt-1 text-sm text-white/50">Sécurisé</p>
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+                <p className="text-3xl font-black">+100</p>
+                <p className="mt-2 text-sm text-white/50">Cours gérés</p>
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+                <p className="text-3xl font-black">+1K</p>
+                <p className="mt-2 text-sm text-white/50">Quiz générés</p>
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+                <p className="text-3xl font-black">98%</p>
+                <p className="mt-2 text-sm text-white/50">Satisfaction</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* HERO IMAGE CARD */}
-        <div className="relative">
-          <div className="absolute -inset-4 rounded-[42px] bg-gradient-to-r from-violet-500/30 to-fuchsia-500/30 blur-2xl"></div>
+          <div className="relative">
+            <div className="absolute -left-10 top-10 h-32 w-32 rounded-full bg-violet-600/20 blur-3xl"></div>
+            <div className="absolute -right-10 bottom-10 h-32 w-32 rounded-full bg-fuchsia-600/20 blur-3xl"></div>
 
-          <div className="relative overflow-hidden rounded-[42px] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur-xl">
-            <div className="rounded-[32px] bg-gradient-to-br from-white/10 to-white/5 p-4">
+            <div className="relative rounded-[32px] border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-2xl">
               <img
-                src="/images/Home.png"
-                alt="SmartLearn AI"
-                className="h-full w-full rounded-[28px] object-contain"
+                src="/images/hero-home.png"
+                alt="SmartLearn AI interface"
+                className="h-full w-full rounded-[24px] object-cover"
               />
             </div>
-
-            <div className="absolute left-8 top-8 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 backdrop-blur-xl">
-              <p className="text-xs text-white/50">Assistant IA</p>
-              <p className="font-bold text-white">Résumé généré</p>
-            </div>
-
-            <div className="absolute bottom-8 right-8 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 backdrop-blur-xl">
-              <p className="text-xs text-white/50">Progression</p>
-              <p className="font-bold text-white">+82% réussite</p>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FEATURES */}
-      <section id="features" className="relative z-10 mx-auto max-w-7xl px-6 py-20">
-        <div className="mb-12 max-w-3xl">
-          <p className="mb-3 font-bold text-fuchsia-300">Fonctionnalités</p>
-          <h2 className="text-4xl font-black md:text-5xl">
-            Tout ce qu’il faut pour un e-learning intelligent
-          </h2>
-          <p className="mt-4 text-white/55">
-            Une plateforme complète avec gestion de cours, IA, quiz,
-            statistiques et accès sécurisé par rôle.
-          </p>
-        </div>
+        <section id="features" className="mx-auto max-w-7xl px-6 py-16">
+          <div className="mb-12 text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-fuchsia-300">
+              Fonctionnalités
+            </p>
+            <h2 className="mt-4 text-3xl font-black sm:text-4xl">
+              Tout ce qu’il faut pour une plateforme moderne
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-white/55">
+              Une expérience complète pour les admins, les enseignants et les
+              étudiants.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-          <FeatureCard
-            icon={<UploadCloud />}
-            title="Upload PDF"
-            text="Les enseignants ajoutent leurs supports de cours facilement."
-          />
-          <FeatureCard
-            icon={<FileText />}
-            title="Résumé automatique"
-            text="Extraction du contenu et résumé intelligent du cours."
-          />
-          <FeatureCard
-            icon={<BookOpen />}
-            title="Quiz intelligent"
-            text="Création automatique de questions depuis le document."
-          />
-          <FeatureCard
-            icon={<BarChart3 />}
-            title="Dashboard"
-            text="Suivi des cours, quiz, utilisateurs et résultats."
-          />
-        </div>
-      </section>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <FeatureCard
+              icon={<BookOpen size={26} />}
+              title="Gestion des cours"
+              text="Ajout de cours, upload PDF et organisation des contenus."
+            />
+            <FeatureCard
+              icon={<Brain size={26} />}
+              title="IA intégrée"
+              text="Résumés automatiques et assistance intelligente pour l’apprentissage."
+            />
+            <FeatureCard
+              icon={<ClipboardList size={26} />}
+              title="Quiz intelligents"
+              text="Génération et soumission de quiz adaptés aux cours."
+            />
+            <FeatureCard
+              icon={<BarChart3 size={26} />}
+              title="Suivi et résultats"
+              text="Tableaux de bord, progression et résultats détaillés."
+            />
+          </div>
+        </section>
 
-      {/* HOW IT WORKS */}
-      <section id="how" className="relative z-10 mx-auto max-w-7xl px-6 py-20">
-        <div className="rounded-[40px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-xl md:p-12">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-            <div>
-              <p className="mb-3 font-bold text-violet-300">Processus</p>
-              <h2 className="text-4xl font-black">
-                Du PDF au quiz en quelques étapes
-              </h2>
-              <p className="mt-4 text-white/55">
-                SmartLearn AI simplifie le travail de l’enseignant et améliore
-                la révision de l’étudiant.
+        <section id="about" className="mx-auto max-w-7xl px-6 py-16">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+              <h2 className="text-3xl font-black">Pourquoi SmartLearn AI ?</h2>
+              <p className="mt-5 text-white/60 leading-8">
+                SmartLearn AI modernise l’expérience e-learning en combinant
+                design moderne, automatisation et intelligence artificielle pour
+                rendre l’apprentissage plus simple, plus rapide et plus
+                interactif.
               </p>
+
+              <div className="mt-8 space-y-4">
+                <CheckItem text="Interface moderne et intuitive" />
+                <CheckItem text="Gestion des rôles : admin, enseignant, étudiant" />
+                <CheckItem text="Résumés automatiques par IA" />
+                <CheckItem text="Quiz et résultats en temps réel" />
+              </div>
             </div>
 
-            <div className="space-y-5">
-              <Step number="01" title="Créer un cours" text="L’enseignant ajoute le titre, la description et le support PDF." />
-              <Step number="02" title="Analyser le document" text="La plateforme extrait le texte du PDF automatiquement." />
-              <Step number="03" title="Générer résumé et quiz" text="L’IA prépare un résumé clair et des questions QCM." />
-              <Step number="04" title="Suivre les résultats" text="L’étudiant répond au quiz et les scores sont enregistrés." />
+            <div className="rounded-[32px] border border-white/10 bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 p-8 backdrop-blur-xl">
+              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-white/10">
+                <ShieldCheck size={30} className="text-fuchsia-300" />
+              </div>
+
+              <h3 className="text-2xl font-black">Sécurité & performance</h3>
+              <p className="mt-4 text-white/60 leading-8">
+                Authentification sécurisée, séparation des rôles, dashboards
+                personnalisés et structure évolutive pour faire grandir la
+                plateforme dans le temps.
+              </p>
+
+              <div className="mt-8 grid grid-cols-2 gap-4">
+                <MiniInfo title="JWT Auth" />
+                <MiniInfo title="Dashboards par rôle" />
+                <MiniInfo title="IA + quiz" />
+                <MiniInfo title="Architecture scalable" />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ROLES */}
-      <section id="roles" className="relative z-10 mx-auto max-w-7xl px-6 py-20">
-        <div className="mb-12 text-center">
-          <p className="mb-3 font-bold text-fuchsia-300">Espaces utilisateurs</p>
-          <h2 className="text-4xl font-black md:text-5xl">
-            Une plateforme pour chaque rôle
-          </h2>
-        </div>
+        <section className="mx-auto max-w-7xl px-6 py-16">
+          <div className="rounded-[36px] border border-white/10 bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 p-10 text-center backdrop-blur-xl">
+            <h2 className="text-3xl font-black sm:text-4xl">
+              Prêt à commencer avec SmartLearn AI ?
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-white/60">
+              Rejoins une nouvelle façon d’apprendre avec une plateforme
+              intelligente, élégante et performante.
+            </p>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <RoleCard
-            title="Admin"
-            items={["Gestion utilisateurs", "Statistiques globales", "Supervision plateforme"]}
-          />
-          <RoleCard
-            title="Enseignant"
-            items={["Création de cours", "Upload PDF", "Génération de quiz"]}
-          />
-          <RoleCard
-            title="Étudiant"
-            items={["Consulter les cours", "Passer les quiz", "Voir sa progression"]}
-          />
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-24 pt-10">
-        <div className="overflow-hidden rounded-[40px] bg-gradient-to-r from-violet-600 to-fuchsia-600 p-10 text-center shadow-2xl shadow-fuchsia-950/40 md:p-16">
-          <h2 className="text-4xl font-black md:text-5xl">
-            Prêt à lancer SmartLearn AI ?
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-white/75">
-            Commence maintenant et découvre une expérience e-learning moderne,
-            intelligente et sécurisée.
-          </p>
-
-          <div className="mt-8 flex justify-center gap-4">
-            <Link
-              to="/signup"
-              className="rounded-2xl bg-white px-7 py-4 font-black text-[#080A18] transition hover:scale-[1.02]"
-            >
-              Créer un compte
-            </Link>
-
-            <Link
-              to="/login"
-              className="rounded-2xl border border-white/20 bg-white/10 px-7 py-4 font-black text-white backdrop-blur-xl transition hover:bg-white/20"
-            >
-              Connexion
-            </Link>
+            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                to="/signup"
+                className="rounded-2xl bg-white px-6 py-4 font-bold text-[#070B17] transition hover:scale-[1.02]"
+              >
+                Créer un compte
+              </Link>
+              <Link
+                to="/login"
+                className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-bold text-white transition hover:bg-white/10"
+              >
+                Connexion
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 border-t border-white/10 px-6 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-sm text-white/45">
-            © 2026 SmartLearn AI. Intelligent E-Learning Platform.
-          </p>
-
-          <div className="flex items-center gap-5 text-sm text-white/45">
-            <span>FastAPI</span>
-            <span>React</span>
-            <span>JWT</span>
-            <span>AI</span>
-          </div>
-        </div>
-      </footer>
+      <div id="contact">
+        <Footer />
+      </div>
     </div>
   );
 }
 
 function FeatureCard({ icon, title, text }) {
   return (
-    <div className="group rounded-[30px] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/[0.07]">
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-lg shadow-violet-950/30">
+    <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/10">
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white">
         {icon}
       </div>
       <h3 className="text-xl font-black">{title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-white/50">{text}</p>
+      <p className="mt-3 text-sm leading-7 text-white/55">{text}</p>
     </div>
   );
 }
 
-function Step({ number, title, text }) {
+function CheckItem({ text }) {
   return (
-    <div className="flex gap-5 rounded-3xl border border-white/10 bg-black/20 p-5">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-sm font-black text-[#080A18]">
-        {number}
-      </div>
-      <div>
-        <h3 className="font-black">{title}</h3>
-        <p className="mt-1 text-sm text-white/50">{text}</p>
-      </div>
+    <div className="flex items-center gap-3 text-white/70">
+      <CheckCircle2 size={20} className="text-fuchsia-400" />
+      <span>{text}</span>
     </div>
   );
 }
 
-function RoleCard({ title, items }) {
+function MiniInfo({ title }) {
   return (
-    <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-7 backdrop-blur-xl">
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
-        <ShieldCheck className="text-fuchsia-300" size={28} />
-      </div>
-
-      <h3 className="text-2xl font-black">{title}</h3>
-
-      <div className="mt-6 space-y-3">
-        {items.map((item) => (
-          <div key={item} className="flex items-center gap-3 text-sm text-white/60">
-            <CheckCircle2 size={18} className="text-violet-300" />
-            {item}
-          </div>
-        ))}
-      </div>
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm font-semibold text-white/75">
+      {title}
     </div>
   );
 }
