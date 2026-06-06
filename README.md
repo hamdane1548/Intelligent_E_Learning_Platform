@@ -154,16 +154,15 @@ Quiz Delivery
 
 ## 🔄 CI/CD
 
-The project uses GitHub Actions for Continuous Integration.
+CI/CD is not yet configured in this repository.
 
-Pipeline responsibilities include:
+Planned CI (via GitHub Actions) will include:
 
 * Running backend unit tests
 * Executing API tests
-* Static code analysis with SonarQube
+* Static code analysis (e.g., SonarQube)
 * Security checks
 * Build verification before merging into the `main` branch
-
 ---
 
 ## 👥 Team Collaboration
