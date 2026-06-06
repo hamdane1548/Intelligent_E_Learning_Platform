@@ -160,6 +160,7 @@ Planned CI (via GitHub Actions) will include:
 * Static code analysis (e.g., SonarQube)
 * Security checks
 * Build verification before merging into the `main` branch
+
 ---
 
 ## 👥 Team Collaboration
