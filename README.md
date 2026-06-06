@@ -61,6 +61,8 @@ Intelligent_E_Learning_Platform/
 
 ## 🔧 System Components
 
+> Note: The components below describe the intended architecture; not all modules may be present in this repository yet.
+
 ### Frontend
 
 Responsible for providing an intuitive user interface for students and administrators.
