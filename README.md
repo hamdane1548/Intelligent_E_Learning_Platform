@@ -73,8 +73,7 @@ Responsible for providing an intuitive user interface for students and administr
 * Interactive learning dashboard
 * Quiz participation
 * AI assistant integration
-
-
+* AI assistant integration
 
 ### Backend
 
