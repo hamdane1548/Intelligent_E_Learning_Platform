@@ -35,7 +35,7 @@ Intelligent_E_Learning_Platform/
 │
 ├── ai-services/
 │   │
-│   ├── rag-system/            
+│   ├── rag-system/
 │   │   ├── embeddings/
 │   │   ├── vector-store/
 │   │   ├── retrieval/
