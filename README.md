@@ -41,7 +41,7 @@ Intelligent_E_Learning_Platform/
 │   │   ├── retrieval/
 │   │   └── generation/
 │   │
-│   └── quiz-generator/        
+│   └── quiz-generator/
 │       ├── models/
 │       ├── prompts/
 │       ├── services/
