@@ -47,7 +47,7 @@ Intelligent_E_Learning_Platform/
 │       ├── services/
 │       └── ...
 │
-├── docs/                      
+├── docs/
 │
 ├── .github/
 │   └── workflows/             # (planned) CI/CD pipelines
