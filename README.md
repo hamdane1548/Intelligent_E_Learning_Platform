@@ -75,7 +75,6 @@ Responsible for providing an intuitive user interface for students and administr
 * AI assistant integration
 
 
-
 ### Backend
 
 The backend exposes REST APIs that power the entire platform.
