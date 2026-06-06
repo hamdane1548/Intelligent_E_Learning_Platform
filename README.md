@@ -18,8 +18,7 @@ This project aims to build a modern educational platform that combines tradition
 
 The project is planned to follow a monorepo architecture where all components are maintained within a single repository.
 
-(Directories shown below represent the intended target structure and may not exist yet in this repository.)
-```text
+(Entries shown below represent the intended target structure and may not exist yet in this repository.)
 Intelligent_E_Learning_Platform/
 │
 ├── frontend/                 
