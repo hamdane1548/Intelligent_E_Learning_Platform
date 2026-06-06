@@ -150,9 +150,6 @@ Quiz Delivery
 
 ---
 
-
-
-
 ## 🔄 CI/CD
 
 CI/CD is not yet configured in this repository.
