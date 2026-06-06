@@ -22,7 +22,7 @@ The project is planned to follow a monorepo architecture where all components ar
 ```text
 Intelligent_E_Learning_Platform/
 │
-├── frontend/                 
+├── frontend/
 │   ├── src/
 │   ├── public/
 │   ├── package.json
