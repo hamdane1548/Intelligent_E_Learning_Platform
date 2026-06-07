@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import User
-from schemas import UserCreate, UserResponse, LoginRequest, TokenResponse
+from schemas import UserCreate, UserResponse, LoginRequest, TokenResponse, UpdateProfileRequest
 from auth import hash_password, verify_password, create_access_token, get_current_user, require_role
 
 router = APIRouter(
@@ -77,3 +77,37 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+# Page Profile - Modifier nom et email
+@router.put("/me", response_model=UserResponse)
+def update_profile(
+    update: UpdateProfileRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if update.email != current_user.email:
+        existing = db.query(User).filter(User.email == update.email).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Email déjà utilisé")
+    current_user.nom = update.nom
+    current_user.email = update.email
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
+# Page Profile - Changer mot de passe
+@router.put("/me/password")
+def update_password(
+    current_password: str,
+    new_password: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not verify_password(current_password, current_user.password):
+        raise HTTPException(status_code=400, detail="Mot de passe actuel incorrect")
+    if len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="Minimum 6 caractères")
+    current_user.password = hash_password(new_password)
+    db.commit()
+    return {"message": "Mot de passe modifié avec succès"}
