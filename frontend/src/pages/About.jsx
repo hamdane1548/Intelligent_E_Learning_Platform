@@ -31,7 +31,7 @@ function About() {
       gradient: "from-fuchsia-600 to-pink-600",
     },
     {
-      name: "Membre IA",
+      name: "Hamza Kharbouch",
       role: "AI / RAG Engineer",
       description: "Système RAG, génération de quiz et modèles LLM.",
       icon: <Cpu size={22} />,
