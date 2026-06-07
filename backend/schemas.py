@@ -99,3 +99,8 @@ class QuizResultResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UpdateProfileRequest(BaseModel):
+    nom: str
+    email: str
