@@ -24,7 +24,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == user.email).first()
 
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email déjà utilisé")
+        raise HTTPException(status_code=400, detail="Email deja utilise")
 
     new_user = User(
         nom=user.nom,
@@ -78,25 +78,30 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
-# Page Profile - Modifier nom et email
+
 @router.put("/me", response_model=UserResponse)
 def update_profile(
     update: UpdateProfileRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    if update.email != current_user.email:
+    db_user = db.query(User).filter(User.id == current_user.id).first()
+
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+
+    if update.email != db_user.email:
         existing = db.query(User).filter(User.email == update.email).first()
-        if existing:
-            raise HTTPException(status_code=400, detail="Email déjà utilisé")
-    current_user.nom = update.nom
-    current_user.email = update.email
+        if existing and existing.id != db_user.id:
+            raise HTTPException(status_code=400, detail="Email deja utilise")
+
+    db_user.nom = update.nom
+    db_user.email = update.email
     db.commit()
-    db.refresh(current_user)
-    return current_user
+    db.refresh(db_user)
+    return db_user
 
 
-# Page Profile - Changer mot de passe
 @router.put("/me/password")
 def update_password(
     current_password: str,
@@ -104,10 +109,17 @@ def update_password(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    if not verify_password(current_password, current_user.password):
+    db_user = db.query(User).filter(User.id == current_user.id).first()
+
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+
+    if not verify_password(current_password, db_user.password):
         raise HTTPException(status_code=400, detail="Mot de passe actuel incorrect")
+
     if len(new_password) < 6:
-        raise HTTPException(status_code=400, detail="Minimum 6 caractères")
-    current_user.password = hash_password(new_password)
+        raise HTTPException(status_code=400, detail="Minimum 6 caracteres")
+
+    db_user.password = hash_password(new_password)
     db.commit()
-    return {"message": "Mot de passe modifié avec succès"}
+    return {"message": "Mot de passe modifie avec succes"}
