@@ -4,9 +4,8 @@ import {
   Brain,
   BookOpen,
   ClipboardList,
-  BarChart3,
-  Github,
-  Linkedin,
+  Globe,
+  Link2,
   Mail,
   Code2,
   Layers,
@@ -145,10 +144,10 @@ function About() {
                 <p className="mt-3 text-sm leading-7 text-white/55">{member.description}</p>
                 <div className="mt-5 flex gap-3">
                   <a href="#" className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 hover:text-white transition">
-                    <Github size={16} />
+                    <Globe size={16} />
                   </a>
                   <a href="#" className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 hover:text-white transition">
-                    <Linkedin size={16} />
+                    <Link2 size={16} />
                   </a>
                   <a href="#" className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 hover:text-white transition">
                     <Mail size={16} />

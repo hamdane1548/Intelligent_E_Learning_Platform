@@ -16,7 +16,7 @@ def main() -> int:
         '-s',
         'tests',
         '-p',
-        'test_api*.py',
+        'test_*.py',
         '-t',
         '.',
         '-v',

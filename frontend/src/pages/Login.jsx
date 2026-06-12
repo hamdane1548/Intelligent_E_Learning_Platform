@@ -33,7 +33,7 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       navigate("/dashboard");
-    } catch (err) {
+    } catch {
       setError("Email ou mot de passe incorrect");
     }
   };

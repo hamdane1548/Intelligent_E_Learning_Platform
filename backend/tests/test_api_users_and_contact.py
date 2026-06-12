@@ -123,7 +123,7 @@ class UserAndContactApiTests(APITestCase):
         wrong_current_response = self.client.put(
             '/users/me/password',
             headers=headers,
-            params={'current_password': 'wrong-password', 'new_password': 'newsecret456'},
+            json={'current_password': 'wrong-password', 'new_password': 'newsecret456'},
         )
         self.assertEqual(wrong_current_response.status_code, 400)
         self.assertIn('detail', wrong_current_response.json())
@@ -131,7 +131,7 @@ class UserAndContactApiTests(APITestCase):
         short_password_response = self.client.put(
             '/users/me/password',
             headers=headers,
-            params={'current_password': 'secret123', 'new_password': '123'},
+            json={'current_password': 'secret123', 'new_password': '123'},
         )
         self.assertEqual(short_password_response.status_code, 400)
         self.assertIn('detail', short_password_response.json())
@@ -139,7 +139,7 @@ class UserAndContactApiTests(APITestCase):
         success_response = self.client.put(
             '/users/me/password',
             headers=headers,
-            params={'current_password': 'secret123', 'new_password': 'newsecret456'},
+            json={'current_password': 'secret123', 'new_password': 'newsecret456'},
         )
         self.assertEqual(success_response.status_code, 200)
         self.assertIn('message', success_response.json())

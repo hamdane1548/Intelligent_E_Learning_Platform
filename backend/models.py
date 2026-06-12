@@ -48,6 +48,16 @@ class Question(Base):
     correct_answer = Column(String, nullable=False)
 
 
+class CourseChunk(Base):
+    __tablename__ = "course_chunks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    course_id = Column(Integer, index=True, nullable=False)
+    chunk_index = Column(Integer, nullable=False)
+    content = Column(String, nullable=False)
+    embedding = Column(String, nullable=False)  # vecteur JSON
+
+
 class QuizResult(Base):
     __tablename__ = "quiz_results"
 

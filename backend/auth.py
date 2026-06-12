@@ -1,13 +1,18 @@
+import os
+
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import User
 
-SECRET_KEY = "smartlearn_secret_key_change_later"
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY", "smartlearn_dev_only_secret_key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

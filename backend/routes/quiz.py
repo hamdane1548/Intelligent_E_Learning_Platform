@@ -2,10 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import Course, Quiz, Question, QuizResult, User
-from schemas import QuizResponse, QuestionResponse, SubmitQuizRequest, QuizResultResponse
-from auth import require_role
-import fitz
-import re
+from schemas import (
+    QuizResponse,
+    QuizGenerationResponse,
+    QuestionResponse,
+    SubmitQuizRequest,
+    QuizResultResponse,
+)
+from auth import get_current_user, require_role
+from pdf_utils import extract_text_from_pdf
+import ai_service
 
 router = APIRouter(
     prefix="/quiz",
@@ -21,59 +27,7 @@ def get_db():
         db.close()
 
 
-def extract_text_from_pdf(pdf_path: str):
-    text = ""
-
-    document = fitz.open(pdf_path)
-
-    for page in document:
-        text += page.get_text()
-
-    document.close()
-
-    return text
-
-
-def clean_text(text: str):
-    text = text.replace("\n", " ")
-    text = re.sub(r"\s+", " ", text)
-    return text.strip()
-
-
-def generate_questions_from_text(text: str, max_questions: int = 5):
-    text = clean_text(text)
-    sentences = re.split(r"(?<=[.!?]) +", text)
-
-    questions = []
-
-    for sentence in sentences:
-        words = sentence.split()
-
-        if len(words) < 10:
-            continue
-
-        keyword = words[0]
-
-        question_text = f"Quel est le sujet principal de cette phrase : « {sentence[:120]}... » ?"
-
-        question = {
-            "question": question_text,
-            "option_a": keyword,
-            "option_b": "Une base de données",
-            "option_c": "Un réseau informatique",
-            "option_d": "Un système d’exploitation",
-            "correct_answer": "A"
-        }
-
-        questions.append(question)
-
-        if len(questions) >= max_questions:
-            break
-
-    return questions
-
-
-@router.post("/generate/{course_id}", response_model=QuizResponse)
+@router.post("/generate/{course_id}", response_model=QuizGenerationResponse)
 def generate_quiz(
     course_id: int,
     db: Session = Depends(get_db),
@@ -92,6 +46,11 @@ def generate_quiz(
     if not text.strip():
         raise HTTPException(status_code=400, detail="Impossible d'extraire le texte du PDF")
 
+    generated_questions, ai_generated = ai_service.generate_quiz_questions(text)
+
+    if not generated_questions:
+        raise HTTPException(status_code=400, detail="Impossible de générer des questions")
+
     quiz = Quiz(
         course_id=course.id,
         title=f"Quiz automatique - {course.title}"
@@ -100,11 +59,6 @@ def generate_quiz(
     db.add(quiz)
     db.commit()
     db.refresh(quiz)
-
-    generated_questions = generate_questions_from_text(text)
-
-    if not generated_questions:
-        raise HTTPException(status_code=400, detail="Impossible de générer des questions")
 
     for q in generated_questions:
         question = Question(
@@ -121,7 +75,7 @@ def generate_quiz(
 
     db.commit()
 
-    return quiz
+    return {"quiz": quiz, "ai_generated": ai_generated}
 
 
 @router.get("/", response_model=list[QuizResponse])
@@ -131,13 +85,33 @@ def get_quizzes(db: Session = Depends(get_db)):
 
 
 @router.get("/{quiz_id}/questions", response_model=list[QuestionResponse])
-def get_quiz_questions(quiz_id: int, db: Session = Depends(get_db)):
+def get_quiz_questions(
+    quiz_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
 
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz introuvable")
 
     questions = db.query(Question).filter(Question.quiz_id == quiz_id).all()
+
+    # Les étudiants ne doivent jamais recevoir la bonne réponse
+    if current_user.role == "etudiant":
+        return [
+            QuestionResponse(
+                id=question.id,
+                quiz_id=question.quiz_id,
+                question=question.question,
+                option_a=question.option_a,
+                option_b=question.option_b,
+                option_c=question.option_c,
+                option_d=question.option_d,
+                correct_answer=None,
+            )
+            for question in questions
+        ]
 
     return questions
 

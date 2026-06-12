@@ -2,11 +2,13 @@ from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import Course, User
-from schemas import CourseCreate, CourseResponse
-from auth import require_role
+from schemas import CourseCreate, CourseResponse, SummaryGenerationResponse
+from auth import get_current_user, require_role
+from pdf_utils import extract_text_from_pdf
+import ai_service
+import rag_service
 import shutil
 import os
-import fitz
 import re
 
 router = APIRouter(
@@ -23,40 +25,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-def extract_text_from_pdf(pdf_path: str):
-    text = ""
-
-    document = fitz.open(pdf_path)
-
-    for page in document:
-        text += page.get_text()
-
-    document.close()
-
-    return text
-
-
-def generate_simple_summary(text: str, max_sentences: int = 5):
-    text = text.replace("\n", " ")
-    text = re.sub(r"\s+", " ", text)
-
-    sentences = re.split(r"(?<=[.!?]) +", text)
-
-    important_sentences = []
-
-    for sentence in sentences:
-        if len(sentence.split()) > 8:
-            important_sentences.append(sentence)
-
-        if len(important_sentences) >= max_sentences:
-            break
-
-    if not important_sentences:
-        return "Résumé non disponible. Le texte du PDF est trop court ou mal extrait."
-
-    return " ".join(important_sentences)
 
 
 @router.post("/", response_model=CourseResponse)
@@ -79,7 +47,10 @@ def create_course(
 
 
 @router.get("/", response_model=list[CourseResponse])
-def get_courses(db: Session = Depends(get_db)):
+def get_courses(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     courses = db.query(Course).all()
     return courses
 
@@ -102,7 +73,11 @@ def upload_pdf(
     if not os.path.exists(UPLOAD_DIR):
         os.makedirs(UPLOAD_DIR)
 
-    file_path = os.path.join(UPLOAD_DIR, f"course_{course_id}_{file.filename}")
+    # Neutralise toute tentative de path traversal dans le nom de fichier
+    safe_filename = os.path.basename(file.filename)
+    safe_filename = re.sub(r"[^A-Za-z0-9._-]", "_", safe_filename)
+
+    file_path = os.path.join(UPLOAD_DIR, f"course_{course_id}_{safe_filename}")
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -112,11 +87,24 @@ def upload_pdf(
     db.commit()
     db.refresh(course)
 
+    # Indexation pour l'assistant IA, en best-effort : un échec sera
+    # rattrapé par l'indexation paresseuse au premier chat.
+    try:
+        text = extract_text_from_pdf(file_path)
+        if text.strip():
+            rag_service.index_course(course.id, text, db)
+    except Exception:
+        pass
+
     return course
 
 
 @router.get("/{course_id}/extract-text")
-def extract_course_text(course_id: int, db: Session = Depends(get_db)):
+def extract_course_text(
+    course_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role(["enseignant", "admin"])),
+):
     course = db.query(Course).filter(Course.id == course_id).first()
 
     if not course:
@@ -134,7 +122,7 @@ def extract_course_text(course_id: int, db: Session = Depends(get_db)):
     }
 
 
-@router.post("/{course_id}/generate-summary", response_model=CourseResponse)
+@router.post("/{course_id}/generate-summary", response_model=SummaryGenerationResponse)
 def generate_course_summary(
     course_id: int,
     db: Session = Depends(get_db),
@@ -153,11 +141,11 @@ def generate_course_summary(
     if not text.strip():
         raise HTTPException(status_code=400, detail="Impossible d'extraire le texte du PDF")
 
-    summary = generate_simple_summary(text)
+    summary, ai_generated = ai_service.generate_summary(text)
 
     course.summary = summary
 
     db.commit()
     db.refresh(course)
 
-    return course
+    return {"course": course, "ai_generated": ai_generated}

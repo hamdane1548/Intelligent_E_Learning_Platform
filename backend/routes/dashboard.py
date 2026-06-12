@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from auth import get_current_user
 from database import SessionLocal
 from models import User, Course, Quiz, QuizResult
 
@@ -18,7 +19,10 @@ def get_db():
 
 
 @router.get("/stats")
-def get_dashboard_stats(db: Session = Depends(get_db)):
+def get_dashboard_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     total_users = db.query(User).count()
     total_students = db.query(User).filter(User.role == "etudiant").count()
     total_teachers = db.query(User).filter(User.role == "enseignant").count()

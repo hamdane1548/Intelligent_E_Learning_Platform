@@ -4,8 +4,10 @@ sqlalchemy
 pydantic
 python-multipart
 passlib[bcrypt]
-bcrypt
+# passlib 1.7.4 est incompatible avec bcrypt >= 4.1
+bcrypt<4.1
 python-jose[cryptography]
-PyPDF2
+PyMuPDF
 python-dotenv
 openai
+httpx

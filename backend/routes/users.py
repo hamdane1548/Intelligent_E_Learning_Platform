@@ -1,14 +1,33 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import User
-from schemas import UserCreate, UserResponse, LoginRequest, TokenResponse, UpdateProfileRequest
-from auth import hash_password, verify_password, create_access_token, get_current_user, require_role
+from schemas import (
+    UserCreate,
+    UserResponse,
+    LoginRequest,
+    TokenResponse,
+    UpdateProfileRequest,
+    UpdatePasswordRequest,
+)
+from auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    decode_access_token,
+    get_current_user,
+    require_role,
+)
 
 router = APIRouter(
     prefix="/users",
     tags=["Users"]
 )
+
+VALID_ROLES = {"etudiant", "enseignant", "admin"}
+
+optional_security = HTTPBearer(auto_error=False)
 
 
 def get_db():
@@ -20,7 +39,28 @@ def get_db():
 
 
 @router.post("/", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user(
+    user: UserCreate,
+    db: Session = Depends(get_db),
+    credentials: HTTPAuthorizationCredentials | None = Depends(optional_security),
+):
+    if user.role not in VALID_ROLES:
+        raise HTTPException(status_code=400, detail="Rôle invalide")
+
+    if user.role == "admin":
+        requester = None
+
+        if credentials:
+            payload = decode_access_token(credentials.credentials)
+            if payload and payload.get("sub"):
+                requester = db.query(User).filter(User.email == payload["sub"]).first()
+
+        if not requester or requester.role != "admin":
+            raise HTTPException(
+                status_code=403,
+                detail="Seul un administrateur peut créer un compte admin",
+            )
+
     existing_user = db.query(User).filter(User.email == user.email).first()
 
     if existing_user:
@@ -104,8 +144,7 @@ def update_profile(
 
 @router.put("/me/password")
 def update_password(
-    current_password: str,
-    new_password: str,
+    request: UpdatePasswordRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -114,12 +153,12 @@ def update_password(
     if not db_user:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
 
-    if not verify_password(current_password, db_user.password):
+    if not verify_password(request.current_password, db_user.password):
         raise HTTPException(status_code=400, detail="Mot de passe actuel incorrect")
 
-    if len(new_password) < 6:
+    if len(request.new_password) < 6:
         raise HTTPException(status_code=400, detail="Minimum 6 caracteres")
 
-    db_user.password = hash_password(new_password)
+    db_user.password = hash_password(request.new_password)
     db.commit()
     return {"message": "Mot de passe modifie avec succes"}

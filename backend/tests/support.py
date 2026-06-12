@@ -1,6 +1,7 @@
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import fitz
 from fastapi.testclient import TestClient
@@ -33,6 +34,20 @@ class APITestCase(unittest.TestCase):
         self.original_upload_dir = courses.UPLOAD_DIR
         self.upload_dir = tempfile.mkdtemp(prefix='smartlearn-tests-')
         courses.UPLOAD_DIR = self.upload_dir
+
+        # Les tests ne doivent jamais appeler un vrai LLM : _chat échoue par
+        # défaut, ce qui force le chemin de repli déterministe.
+        self._ai_chat_patch = patch(
+            'ai_service._chat',
+            side_effect=RuntimeError('AI disabled in tests'),
+        )
+        self._ai_chat_patch.start()
+
+        self._ai_embed_patch = patch(
+            'ai_service._embed',
+            side_effect=RuntimeError('AI disabled in tests'),
+        )
+        self._ai_embed_patch.start()
 
         self.original_auth_hash_password = auth.hash_password
         self.original_auth_verify_password = auth.verify_password
@@ -70,6 +85,8 @@ class APITestCase(unittest.TestCase):
         self.client = TestClient(main.app)
 
     def tearDown(self):
+        self._ai_embed_patch.stop()
+        self._ai_chat_patch.stop()
         self.client.close()
         main.app.dependency_overrides.clear()
         Base.metadata.drop_all(bind=self.engine)

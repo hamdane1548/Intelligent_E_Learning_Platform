@@ -25,7 +25,7 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
         self.assertEqual(success_response.json()['title'], 'AI Basics')
         self.assertEqual(success_response.json()['teacher_id'], teacher.id)
 
-        list_response = self.client.get('/courses/')
+        list_response = self.client.get('/courses/', headers=self.auth_headers(student))
         self.assertEqual(list_response.status_code, 200)
         self.assertEqual(len(list_response.json()), 1)
 
@@ -58,10 +58,16 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
         course_without_pdf = self.create_course(title='No PDF', teacher_id=teacher.id, pdf_path=None)
         course_with_pdf = self.create_course(title='Data Science', teacher_id=teacher.id, pdf_path='course.pdf')
 
-        missing_response = self.client.get('/courses/99999/extract-text')
+        missing_response = self.client.get(
+            '/courses/99999/extract-text',
+            headers=self.auth_headers(teacher),
+        )
         self.assertEqual(missing_response.status_code, 404)
 
-        no_pdf_response = self.client.get(f'/courses/{course_without_pdf.id}/extract-text')
+        no_pdf_response = self.client.get(
+            f'/courses/{course_without_pdf.id}/extract-text',
+            headers=self.auth_headers(teacher),
+        )
         self.assertEqual(no_pdf_response.status_code, 400)
 
         summary_without_pdf = self.client.post(
@@ -77,7 +83,10 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
         )
 
         with patch('routes.courses.extract_text_from_pdf', return_value=extracted_text):
-            extract_response = self.client.get(f'/courses/{course_with_pdf.id}/extract-text')
+            extract_response = self.client.get(
+                f'/courses/{course_with_pdf.id}/extract-text',
+                headers=self.auth_headers(teacher),
+            )
             self.assertEqual(extract_response.status_code, 200)
             self.assertIn('Adaptive learning systems', extract_response.json()['text_preview'])
 
@@ -86,8 +95,8 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
                 headers=self.auth_headers(teacher),
             )
             self.assertEqual(summary_response.status_code, 200)
-            self.assertTrue(summary_response.json()['summary'])
-            self.assertIn('Adaptive learning systems', summary_response.json()['summary'])
+            self.assertTrue(summary_response.json()['course']['summary'])
+            self.assertIn('Adaptive learning systems', summary_response.json()['course']['summary'])
 
         with patch('routes.courses.extract_text_from_pdf', return_value='   '):
             empty_response = self.client.post(
@@ -115,13 +124,16 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
             )
 
         self.assertEqual(generate_response.status_code, 200)
-        quiz_id = generate_response.json()['id']
+        quiz_id = generate_response.json()['quiz']['id']
 
         list_response = self.client.get('/quiz/')
         self.assertEqual(list_response.status_code, 200)
         self.assertEqual(len(list_response.json()), 1)
 
-        questions_response = self.client.get(f'/quiz/{quiz_id}/questions')
+        questions_response = self.client.get(
+            f'/quiz/{quiz_id}/questions',
+            headers=self.auth_headers(student),
+        )
         self.assertEqual(questions_response.status_code, 200)
         questions = questions_response.json()
         self.assertGreaterEqual(len(questions), 1)
@@ -169,7 +181,10 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
         self.assertEqual(generation_failure.status_code, 400)
         self.assertIn('detail', generation_failure.json())
 
-        missing_quiz_response = self.client.get('/quiz/99999/questions')
+        missing_quiz_response = self.client.get(
+            '/quiz/99999/questions',
+            headers=self.auth_headers(teacher),
+        )
         self.assertEqual(missing_quiz_response.status_code, 404)
 
         empty_quiz = self.create_quiz(course_id=course_with_pdf.id, title='Empty Quiz')
@@ -210,7 +225,7 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
         self.assertEqual(len(all_results_response.json()), 1)
 
     def test_dashboard_stats_aggregates_counts_and_average_score(self):
-        self.create_user('admin@example.com', role='admin')
+        admin = self.create_user('admin@example.com', role='admin')
         teacher = self.create_user('teacher@example.com', role='enseignant')
         student = self.create_user('student@example.com', role='etudiant')
 
@@ -219,7 +234,7 @@ class CoursesQuizAndDashboardApiTests(APITestCase):
         self.create_result(student_id=student.id, quiz_id=quiz.id, score=1, total_questions=2)
         self.create_result(student_id=student.id, quiz_id=quiz.id, score=2, total_questions=2)
 
-        response = self.client.get('/dashboard/stats')
+        response = self.client.get('/dashboard/stats', headers=self.auth_headers(admin))
         self.assertEqual(response.status_code, 200)
 
         body = response.json()
