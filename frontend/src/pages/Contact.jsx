@@ -7,8 +7,8 @@ import {
   Send,
   MapPin,
   Phone,
-  Github,
-  Linkedin,
+  Globe,
+  Link2,
 } from "lucide-react";
 import Footer from "../components/Footer";
  
@@ -112,10 +112,10 @@ function Contact() {
                 <p className="font-bold mb-4">Nos réseaux</p>
                 <div className="flex gap-3">
                   <a href="#" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 hover:text-white transition">
-                    <Github size={18} />
+                    <Globe size={16} />
                   </a>
                   <a href="#" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 hover:text-white transition">
-                    <Linkedin size={18} />
+                    <Link2 size={16} />
                   </a>
                   <a href="#" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 hover:text-white transition">
                     <Mail size={18} />

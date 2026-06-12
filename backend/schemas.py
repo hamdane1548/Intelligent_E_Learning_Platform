@@ -73,7 +73,7 @@ class QuestionResponse(BaseModel):
     option_b: str
     option_c: str
     option_d: str
-    correct_answer: str
+    correct_answer: str | None = None
 
     class Config:
         from_attributes = True
@@ -104,3 +104,33 @@ class QuizResultResponse(BaseModel):
 class UpdateProfileRequest(BaseModel):
     nom: str
     email: str
+
+
+class UpdatePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class ChatRequest(BaseModel):
+    question: str
+    history: list[ChatMessage] = []
+
+
+class ChatResponse(BaseModel):
+    answer: str
+    sources: list[str]
+
+
+class SummaryGenerationResponse(BaseModel):
+    course: CourseResponse
+    ai_generated: bool
+
+
+class QuizGenerationResponse(BaseModel):
+    quiz: QuizResponse
+    ai_generated: bool

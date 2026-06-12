@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import API from "../services/api";
 import {
   ArrowLeft,
   User,
@@ -24,25 +25,32 @@ function Profile() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("info");
  
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
- 
+
     if (!nom || !email) {
       setError("Nom et email sont obligatoires.");
       return;
     }
- 
-    // Simulation de sauvegarde
-    setSuccess("Profil mis à jour avec succès !");
+
+    try {
+      const response = await API.put("/users/me", { nom, email });
+      localStorage.setItem("user", JSON.stringify(response.data));
+      setSuccess("Profil mis à jour avec succès !");
+    } catch (err) {
+      setError(
+        err.response?.data?.detail || "Erreur lors de la mise à jour du profil."
+      );
+    }
   };
- 
-  const handlePasswordChange = (e) => {
+
+  const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
- 
+
     if (!currentPassword || !newPassword) {
       setError("Veuillez remplir les deux champs.");
       return;
@@ -51,10 +59,20 @@ function Profile() {
       setError("Le nouveau mot de passe doit contenir au moins 6 caractères.");
       return;
     }
- 
-    setSuccess("Mot de passe modifié avec succès !");
-    setCurrentPassword("");
-    setNewPassword("");
+
+    try {
+      await API.put("/users/me/password", {
+        current_password: currentPassword,
+        new_password: newPassword,
+      });
+      setSuccess("Mot de passe modifié avec succès !");
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (err) {
+      setError(
+        err.response?.data?.detail || "Erreur lors du changement de mot de passe."
+      );
+    }
   };
  
   const stats = [

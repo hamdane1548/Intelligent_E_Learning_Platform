@@ -3,6 +3,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Notfound from "./pages/Notfound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -15,6 +19,10 @@ function App() {
 
         <Route path="/signup" element={<Signup />} />
 
+        <Route path="/about" element={<About />} />
+
+        <Route path="/contact" element={<Contact />} />
+
         <Route
           path="/dashboard"
           element={
@@ -23,6 +31,17 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Notfound />} />
       </Routes>
     </BrowserRouter>
   );

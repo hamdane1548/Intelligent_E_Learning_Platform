@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import ChatAssistant from "../components/ChatAssistant";
 import {
   LayoutDashboard,
   Users,
@@ -190,6 +191,8 @@ function Dashboard() {
 
             {activePage === "quiz" && <QuizManagement user={user} />}
 
+            {activePage === "assistant" && <ChatAssistant />}
+
             {activePage === "users" && user?.role === "admin" && (
               <UsersManagement />
             )}
@@ -232,6 +235,7 @@ function getMenuItems(role) {
       { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
       { id: "courses", label: "Cours", icon: <BookOpen size={20} /> },
       { id: "quiz", label: "Quiz", icon: <FileText size={20} /> },
+      { id: "assistant", label: "Assistant IA", icon: <Brain size={20} /> },
       { id: "users", label: "Utilisateurs", icon: <Users size={20} /> },
       { id: "results", label: "Résultats", icon: <Trophy size={20} /> },
       { id: "stats", label: "Statistiques", icon: <BarChart3 size={20} /> },
@@ -244,6 +248,7 @@ function getMenuItems(role) {
       { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
       { id: "courses", label: "Mes cours", icon: <BookOpen size={20} /> },
       { id: "quiz", label: "Quiz", icon: <FileText size={20} /> },
+      { id: "assistant", label: "Assistant IA", icon: <Brain size={20} /> },
       { id: "stats", label: "Statistiques", icon: <BarChart3 size={20} /> },
     ];
   }
@@ -252,6 +257,7 @@ function getMenuItems(role) {
     { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
     { id: "courses", label: "Cours", icon: <BookOpen size={20} /> },
     { id: "quiz", label: "Mes quiz", icon: <ClipboardList size={20} /> },
+    { id: "assistant", label: "Assistant IA", icon: <Brain size={20} /> },
     { id: "results", label: "Mes résultats", icon: <BarChart3 size={20} /> },
   ];
 }
@@ -260,6 +266,7 @@ function getPageTitle(page) {
   if (page === "dashboard") return "Dashboard";
   if (page === "courses") return "Cours";
   if (page === "quiz") return "Quiz";
+  if (page === "assistant") return "Assistant IA";
   if (page === "users") return "Utilisateurs";
   if (page === "results") return "Résultats";
   if (page === "stats") return "Statistiques";
@@ -431,6 +438,7 @@ function CoursesManagement({ user }) {
   const [selectedFiles, setSelectedFiles] = useState({});
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [pendingAction, setPendingAction] = useState(null);
 
   const canManage = user?.role === "admin" || user?.role === "enseignant";
 
@@ -504,25 +512,39 @@ function CoursesManagement({ user }) {
   const generateSummary = async (courseId) => {
     setMessage("");
     setError("");
+    setPendingAction(`${courseId}:summary`);
 
     try {
-      await API.post(`/courses/${courseId}/generate-summary`);
-      setMessage("Résumé généré avec succès.");
+      const res = await API.post(`/courses/${courseId}/generate-summary`);
+      setMessage(
+        res.data?.ai_generated
+          ? "Résumé généré par IA ✨"
+          : "IA indisponible — résumé basique généré."
+      );
       fetchCourses();
     } catch (err) {
       setError(err.response?.data?.detail || "Erreur lors de la génération du résumé.");
+    } finally {
+      setPendingAction(null);
     }
   };
 
   const generateQuiz = async (courseId) => {
     setMessage("");
     setError("");
+    setPendingAction(`${courseId}:quiz`);
 
     try {
-      await API.post(`/quiz/generate/${courseId}`);
-      setMessage("Quiz généré avec succès.");
+      const res = await API.post(`/quiz/generate/${courseId}`);
+      setMessage(
+        res.data?.ai_generated
+          ? "Quiz généré par IA ✨"
+          : "IA indisponible — quiz basique généré."
+      );
     } catch (err) {
       setError(err.response?.data?.detail || "Erreur lors de la génération du quiz.");
+    } finally {
+      setPendingAction(null);
     }
   };
 
@@ -680,16 +702,22 @@ function CoursesManagement({ user }) {
 
                         <button
                           onClick={() => generateSummary(course.id)}
-                          className="w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-bold text-white hover:bg-violet-700"
+                          disabled={pendingAction !== null}
+                          className="w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-bold text-white hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          Générer résumé
+                          {pendingAction === `${course.id}:summary`
+                            ? "Génération en cours…"
+                            : "Générer résumé"}
                         </button>
 
                         <button
                           onClick={() => generateQuiz(course.id)}
-                          className="w-full rounded-2xl bg-fuchsia-600 px-4 py-3 text-sm font-bold text-white hover:bg-fuchsia-700"
+                          disabled={pendingAction !== null}
+                          className="w-full rounded-2xl bg-fuchsia-600 px-4 py-3 text-sm font-bold text-white hover:bg-fuchsia-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          Générer quiz
+                          {pendingAction === `${course.id}:quiz`
+                            ? "Génération en cours…"
+                            : "Générer quiz"}
                         </button>
                       </div>
                     )}
@@ -745,7 +773,7 @@ function QuizManagement({ user }) {
     try {
       const res = await API.get(`/quiz/${quiz.id}/questions`);
       setQuestions(res.data);
-    } catch (err) {
+    } catch {
       setError("Impossible de charger les questions.");
     }
   };
@@ -950,8 +978,6 @@ function ResultsManagement({ user }) {
   const isAdmin = user?.role === "admin";
 
   const fetchResults = () => {
-    setError("");
-
     const url = isAdmin
       ? "/quiz/results/all"
       : `/quiz/results/student/${user?.id}`;
@@ -959,6 +985,7 @@ function ResultsManagement({ user }) {
     API.get(url)
       .then((res) => {
         setResults(res.data);
+        setError("");
       })
       .catch((err) => {
         console.log(err);
@@ -973,9 +1000,15 @@ function ResultsManagement({ user }) {
   const getAverageScore = () => {
     if (results.length === 0) return 0;
 
-    const total = results.reduce((sum, item) => sum + (item.score || 0), 0);
+    const totalScore = results.reduce((sum, item) => sum + (item.score || 0), 0);
+    const totalQuestions = results.reduce(
+      (sum, item) => sum + (item.total_questions || 0),
+      0
+    );
 
-    return Math.round(total / results.length);
+    if (totalQuestions === 0) return 0;
+
+    return Math.round((totalScore / totalQuestions) * 100);
   };
 
   return (
@@ -1067,13 +1100,16 @@ function ResultsManagement({ user }) {
 
                   <td className="py-4 pr-4">
                     <span className="rounded-full bg-fuchsia-500/15 px-3 py-1 text-xs font-bold text-fuchsia-300">
-                      {result.score}%
+                      {result.score}/{result.total_questions}
+                      {result.total_questions
+                        ? ` (${Math.round((result.score / result.total_questions) * 100)}%)`
+                        : ""}
                     </span>
                   </td>
 
                   <td className="py-4 pr-4 text-white/45">
-                    {result.created_at
-                      ? new Date(result.created_at).toLocaleDateString()
+                    {result.submitted_at
+                      ? new Date(result.submitted_at).toLocaleDateString()
                       : "-"}
                   </td>
                 </tr>
