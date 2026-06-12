@@ -1,0 +1,28 @@
+INFO:     127.0.0.1:53522 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59874 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61044 - "OPTIONS /users/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61044 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:61044 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:61044 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51198 - "OPTIONS /users/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51198 - "POST /users/ HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:54883 - "POST /users/ HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:52811 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:52811 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50673 - "POST /users/ HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:63622 - "POST /users/ HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:54807 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:61366 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:59518 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50259 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50259 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50259 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:50259 - "POST /users/login HTTP/1.1" 401 Unauthorized
+ INFO:     127.0.0.1:58885 - "OPTIONS /users/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58885 - "POST /users/login HTTP/1.1" 401 Unauthorized
+  INFO:     127.0.0.1:56025 - "OPTIONS /users/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56025 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56025 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56025 - "POST /users/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56025 - "POST /users/login HTTP/1.1" 401 Unauthorized
+     
