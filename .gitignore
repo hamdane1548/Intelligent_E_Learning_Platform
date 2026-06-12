@@ -18,3 +18,5 @@ frontend/dist/
 .env
 backend/.env
 frontend/.env.idea/
+.idea/
+.venv/
